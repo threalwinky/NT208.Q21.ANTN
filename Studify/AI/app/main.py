@@ -65,7 +65,7 @@ def chat(req: ChatRequest):
         )
     else:
         response = (
-            f"Mình là Studify AI local. Mình có thể hỗ trợ {name} về học tập, định hướng nghề, "
+            f"Mình là Studify. Mình có thể hỗ trợ {name} về học tập, định hướng nghề, "
             "lên lịch học và động lực tinh thần. Bạn muốn bắt đầu từ mục nào?"
         )
 
