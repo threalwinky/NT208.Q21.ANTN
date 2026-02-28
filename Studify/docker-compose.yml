@@ -1,0 +1,44 @@
+services:
+  db:
+    build:
+      context: ./db
+    container_name: studify-db
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+
+  ai:
+    build:
+      context: ./AI
+    container_name: studify-ai
+    restart: unless-stopped
+    ports:
+      - 8000
+
+  backend:
+    build:
+      context: ./backend
+    container_name: studify-backend
+    restart: unless-stopped
+    depends_on:
+      - db
+      - ai
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb://db:27017/studify
+      - AI_SERVICE_URL=http://ai:8000
+    ports:
+      - 5000
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+      args:
+        - VITE_API_URL=/api
+    container_name: studify-nginx
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
