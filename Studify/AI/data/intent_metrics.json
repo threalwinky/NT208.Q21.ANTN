@@ -1,0 +1,45 @@
+{
+  "accuracy": 0.8571428571428571,
+  "report": {
+    "career": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 2.0
+    },
+    "general": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1.0
+    },
+    "mental_support": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1-score": 0.8,
+      "support": 2.0
+    },
+    "study": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1-score": 0.6666666666666666,
+      "support": 2.0
+    },
+    "accuracy": 0.8571428571428571,
+    "macro avg": {
+      "precision": 0.9166666666666666,
+      "recall": 0.875,
+      "f1-score": 0.8666666666666666,
+      "support": 7.0
+    },
+    "weighted avg": {
+      "precision": 0.9047619047619048,
+      "recall": 0.8571428571428571,
+      "f1-score": 0.8476190476190475,
+      "support": 7.0
+    }
+  },
+  "dataset_size": 28,
+  "test_size": 0.25,
+  "model_file": "data/intent_model.joblib"
+}

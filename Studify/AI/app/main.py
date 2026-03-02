@@ -1,7 +1,15 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from pathlib import Path
+from typing import Optional, Tuple
+
+import joblib
 
 app = FastAPI()
+
+MODEL_PATH = Path("data/intent_model.joblib")
+INTENT_PIPELINE = None
+MIN_CONFIDENCE = 0.45
 
 
 class Profile(BaseModel):
@@ -25,6 +33,31 @@ MOTIVATION_STORIES = [
 ]
 
 
+def load_model() -> None:
+    global INTENT_PIPELINE, MIN_CONFIDENCE
+    if not MODEL_PATH.exists():
+        return
+
+    artifact = joblib.load(MODEL_PATH)
+    INTENT_PIPELINE = artifact.get("pipeline")
+    MIN_CONFIDENCE = float(artifact.get("min_confidence", MIN_CONFIDENCE))
+
+
+def detect_intent_ml(message: str) -> Tuple[Optional[str], float]:
+    if INTENT_PIPELINE is None:
+        return None, 0.0
+
+    probabilities = INTENT_PIPELINE.predict_proba([message])[0]
+    classes = INTENT_PIPELINE.classes_
+    best_idx = int(probabilities.argmax())
+    best_label = str(classes[best_idx])
+    best_confidence = float(probabilities[best_idx])
+
+    if best_confidence >= MIN_CONFIDENCE:
+        return best_label, best_confidence
+    return None, best_confidence
+
+
 def detect_intent(message: str) -> str:
     m = message.lower()
     if any(k in m for k in ["nản", "bỏ cuộc", "stress", "áp lực", "mệt", "burnout", "thất tình"]):
@@ -36,14 +69,23 @@ def detect_intent(message: str) -> str:
     return "general"
 
 
+load_model()
+
+
 @app.get("/health")
 def health():
-    return {"ok": True, "service": "ai"}
+    return {
+        "ok": True,
+        "service": "ai",
+        "model_loaded": INTENT_PIPELINE is not None,
+        "model_path": str(MODEL_PATH)
+    }
 
 
 @app.post("/chat")
 def chat(req: ChatRequest):
-    intent = detect_intent(req.message)
+    predicted_intent, confidence = detect_intent_ml(req.message)
+    intent = predicted_intent or detect_intent(req.message)
     name = req.profile.name or "bạn"
     major = req.profile.major or "ngành của bạn"
 
@@ -71,5 +113,8 @@ def chat(req: ChatRequest):
 
     return {
         "intent": intent,
-        "reply": response
+        "reply": response,
+        "confidence": confidence if predicted_intent else None,
+        "source": "ml" if predicted_intent else "rule"
     }
+
