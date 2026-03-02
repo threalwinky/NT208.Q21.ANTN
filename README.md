@@ -64,7 +64,7 @@ Tuỳ chọn:
 python scripts/train_intent.py --test-size 0.3 --min-confidence 0.5
 ```
 
-## 4) Khởi chạy app bằng Docker (khuyến nghị)
+## 4) Khởi chạy app bằng Docker
 
 Từ thư mục `Studify`:
 
@@ -88,7 +88,7 @@ Kiểm tra nhanh health:
 docker compose restart ai
 ```
 
-## 5) Khởi chạy local không Docker (tuỳ chọn)
+## 5) Khởi chạy local không Docker
 
 ### 5.1 MongoDB
 
