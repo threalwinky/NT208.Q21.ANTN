@@ -41,5 +41,5 @@
   },
   "dataset_size": 28,
   "test_size": 0.25,
-  "model_file": "data/intent_model.joblib"
+  "model_file": "/home/team/NT208/NT208.Q21.ANTN/Studify/AI/data/intent_model.joblib"
 }

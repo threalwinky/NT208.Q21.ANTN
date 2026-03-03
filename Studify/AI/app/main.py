@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from pathlib import Path
 from typing import Optional, Tuple
+import re
+import unicodedata
 
 import joblib
 
@@ -59,14 +61,76 @@ def detect_intent_ml(message: str) -> Tuple[Optional[str], float]:
 
 
 def detect_intent(message: str) -> str:
-    m = message.lower()
-    if any(k in m for k in ["nản", "bỏ cuộc", "stress", "áp lực", "mệt", "burnout", "thất tình"]):
+    def normalize_text(text: str) -> str:
+        value = text.lower().replace("đ", "d")
+        value = unicodedata.normalize("NFD", value)
+        value = "".join(ch for ch in value if unicodedata.category(ch) != "Mn")
+        value = re.sub(r"[^a-z0-9\s]", " ", value)
+        value = re.sub(r"\s+", " ", value).strip()
+        return value
+
+    normalized = normalize_text(message)
+    tokens = set(normalized.split())
+
+    keyword_groups = {
+        "mental_support": {
+            "single": {
+                "stress", "apluc", "met", "buon", "chan", "nan", "burnout", "coidon",
+                "loau", "matngu", "kiet", "hoangmang", "tuyetvong", "suy", "tramcam",
+                "thattinh", "khoc", "be tac"
+            },
+            "phrases": {
+                "bo cuoc", "mat dong luc", "ap luc", "qua met", "khong on",
+                "khong the tiep tuc", "khong biet lam sao", "muon nghi hoc", "het dong luc"
+            },
+        },
+        "career": {
+            "single": {
+                "career", "nghe", "intern", "thuctap", "cv", "portfolio", "phongvan",
+                "fresher", "linkedin", "vieclam", "offer", "congty", "itjob", "resum"
+            },
+            "phrases": {
+                "dinh huong nghe nghiep", "tim viec", "xin viec", "thuc tap",
+                "viet cv", "xay portfolio", "roi mon di lam", "chon huong nghe"
+            },
+        },
+        "study": {
+            "single": {
+                "hoc", "on", "mon", "gpa", "diem", "deadline", "lich", "tinchi",
+                "dangky", "decuong", "kiemtra", "thicuoiky", "doan", "baitap", "pomodoro",
+                "active", "recall", "uutien", "kehoach", "toiuu", "study", "hocky",
+                "hocvu", "uit", "ctdt"
+            },
+            "phrases": {
+                "lo trinh hoc", "dang ky mon", "cai thien gpa", "ke hoach hoc",
+                "phan bo thoi gian", "on thi", "sap xep lich hoc", "hoc phan",
+                "co van hoc tap", "quy che hoc vu", "hoc lai", "hoc cai thien"
+            },
+        },
+    }
+
+    scores = {"mental_support": 0, "career": 0, "study": 0}
+
+    joined_text = f" {normalized} "
+    for intent, group in keyword_groups.items():
+        for word in group["single"]:
+            if word in tokens:
+                scores[intent] += 1
+        for phrase in group["phrases"]:
+            phrase_norm = f" {phrase} "
+            if phrase_norm in joined_text:
+                scores[intent] += 2
+
+    best_intent = max(scores, key=scores.get)
+    best_score = scores[best_intent]
+
+    if best_score <= 0:
+        return "general"
+
+    if scores["mental_support"] >= 2 and scores["mental_support"] >= scores["study"]:
         return "mental_support"
-    if any(k in m for k in ["nghề", "career", "thực tập", "cv", "portfolio"]):
-        return "career"
-    if any(k in m for k in ["lộ trình", "học", "ôn", "môn", "gpa", "điểm"]):
-        return "study"
-    return "general"
+
+    return best_intent
 
 
 load_model()

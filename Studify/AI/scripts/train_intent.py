@@ -10,9 +10,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 
 
-DEFAULT_DATASET = Path("data/intent_dataset.jsonl")
-DEFAULT_MODEL_OUT = Path("data/intent_model.joblib")
-DEFAULT_METRICS_OUT = Path("data/intent_metrics.json")
+AI_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_DATASET = AI_ROOT / "data" / "intent_dataset.jsonl"
+DEFAULT_MODEL_OUT = AI_ROOT / "data" / "intent_model.joblib"
+DEFAULT_METRICS_OUT = AI_ROOT / "data" / "intent_metrics.json"
 
 
 
@@ -41,7 +42,17 @@ def main():
     parser.add_argument("--min-confidence", type=float, default=0.45)
     args = parser.parse_args()
 
-    samples = read_jsonl(args.dataset)
+    dataset_path = args.dataset if args.dataset.is_absolute() else (AI_ROOT / args.dataset)
+    model_out_path = args.model_out if args.model_out.is_absolute() else (AI_ROOT / args.model_out)
+    metrics_out_path = args.metrics_out if args.metrics_out.is_absolute() else (AI_ROOT / args.metrics_out)
+
+    if not dataset_path.exists():
+        raise FileNotFoundError(
+            f"Không tìm thấy dataset: {dataset_path}. "
+            f"Hãy kiểm tra file data/intent_dataset.jsonl hoặc truyền --dataset đúng đường dẫn."
+        )
+
+    samples = read_jsonl(dataset_path)
     if len(samples) < 12:
         raise ValueError("Dataset quá nhỏ. Cần ít nhất 12 mẫu để train ổn định.")
 
@@ -84,8 +95,8 @@ def main():
     accuracy = accuracy_score(y_test, y_pred)
     report = classification_report(y_test, y_pred, output_dict=True)
 
-    args.model_out.parent.mkdir(parents=True, exist_ok=True)
-    args.metrics_out.parent.mkdir(parents=True, exist_ok=True)
+    model_out_path.parent.mkdir(parents=True, exist_ok=True)
+    metrics_out_path.parent.mkdir(parents=True, exist_ok=True)
 
     artifact = {
         "pipeline": pipeline,
@@ -93,21 +104,21 @@ def main():
         "min_confidence": float(args.min_confidence),
         "dataset_size": len(samples),
     }
-    joblib.dump(artifact, args.model_out)
+    joblib.dump(artifact, model_out_path)
 
     metrics = {
         "accuracy": accuracy,
         "report": report,
         "dataset_size": len(samples),
         "test_size": args.test_size,
-        "model_file": str(args.model_out),
+        "model_file": str(model_out_path),
     }
-    with args.metrics_out.open("w", encoding="utf-8") as handle:
+    with metrics_out_path.open("w", encoding="utf-8") as handle:
         json.dump(metrics, handle, ensure_ascii=False, indent=2)
 
     print(f"Train xong. Accuracy={accuracy:.4f}")
-    print(f"Model: {args.model_out}")
-    print(f"Metrics: {args.metrics_out}")
+    print(f"Model: {model_out_path}")
+    print(f"Metrics: {metrics_out_path}")
 
 
 if __name__ == "__main__":
