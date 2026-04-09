@@ -1,0 +1,56 @@
+[
+  {
+    "id": "uit-main",
+    "name": "Website chính UIT",
+    "base_url": "https://www.uit.edu.vn",
+    "domain": "uit.edu.vn",
+    "official": true,
+    "max_pages": 4,
+    "priority_keywords": ["sinh-vien", "thong-bao", "student", "hoc-vu", "dao-tao", "lich", "hoc-bong"]
+  },
+  {
+    "id": "uit-daa",
+    "name": "Cổng đào tạo DAA",
+    "base_url": "https://daa.uit.edu.vn/sinhvien",
+    "domain": "daa.uit.edu.vn",
+    "official": true,
+    "max_pages": 5,
+    "priority_keywords": ["sinhvien", "thong-bao", "hoc-vu", "tot-nghiep", "hoc-phi", "lich-thi", "ngoai-ngu"]
+  },
+  {
+    "id": "uit-student",
+    "name": "Cổng sinh viên UIT",
+    "base_url": "https://student.uit.edu.vn",
+    "domain": "student.uit.edu.vn",
+    "official": true,
+    "max_pages": 5,
+    "priority_keywords": ["sinh-vien", "thong-bao", "hoc-vu", "tot-nghiep", "dang-ky", "hoc-phi"]
+  },
+  {
+    "id": "uit-ctsv",
+    "name": "Phòng Công tác Sinh viên",
+    "base_url": "https://ctsv.uit.edu.vn",
+    "domain": "ctsv.uit.edu.vn",
+    "official": true,
+    "max_pages": 5,
+    "priority_keywords": ["tam-ly", "hoc-bong", "sinh-vien", "ky-nang", "ho-tro", "thong-bao"]
+  },
+  {
+    "id": "uit-courses",
+    "name": "Courses UIT",
+    "base_url": "https://courses.uit.edu.vn",
+    "domain": "courses.uit.edu.vn",
+    "official": true,
+    "max_pages": 3,
+    "priority_keywords": ["course", "moodle", "dang-nhap", "hoc-truc-tuyen", "sinh-vien"]
+  },
+  {
+    "id": "uit-oep",
+    "name": "Văn phòng Các chương trình đặc biệt",
+    "base_url": "https://oep.uit.edu.vn/vi",
+    "domain": "oep.uit.edu.vn",
+    "official": true,
+    "max_pages": 4,
+    "priority_keywords": ["chuong-trinh", "hoc-tap", "hoc-phi", "thong-bao", "sinh-vien", "chat-luong-cao", "tien-tien"]
+  }
+]
