@@ -1,0 +1,2 @@
+"""Studify backend package."""
+

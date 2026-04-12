@@ -1,0 +1,119 @@
+[
+  {
+    "id": "uit-main",
+    "name": "Website chính UIT",
+    "base_url": "https://www.uit.edu.vn",
+    "domain": "uit.edu.vn",
+    "official": true,
+    "max_pages": 10,
+    "priority_keywords": ["sinh-vien", "thong-bao", "student", "hoc-vu", "dao-tao", "lich", "hoc-bong"]
+  },
+  {
+    "id": "uit-daa",
+    "name": "Cổng đào tạo DAA",
+    "base_url": "https://daa.uit.edu.vn/sinhvien",
+    "domain": "daa.uit.edu.vn",
+    "official": true,
+    "max_pages": 16,
+    "priority_keywords": ["sinhvien", "thong-bao", "hoc-vu", "tot-nghiep", "hoc-phi", "lich-thi", "ngoai-ngu", "kehoachnam"]
+  },
+  {
+    "id": "uit-student",
+    "name": "Cổng sinh viên UIT",
+    "base_url": "https://student.uit.edu.vn",
+    "domain": "student.uit.edu.vn",
+    "official": true,
+    "max_pages": 16,
+    "priority_keywords": ["sinh-vien", "thong-bao", "hoc-vu", "tot-nghiep", "dang-ky", "hoc-phi"]
+  },
+  {
+    "id": "uit-ctsv",
+    "name": "Phòng Công tác Sinh viên",
+    "base_url": "https://ctsv.uit.edu.vn",
+    "domain": "ctsv.uit.edu.vn",
+    "official": true,
+    "max_pages": 10,
+    "priority_keywords": ["tam-ly", "hoc-bong", "sinh-vien", "ky-nang", "ho-tro", "thong-bao"]
+  },
+  {
+    "id": "uit-khtc",
+    "name": "Phòng Kế hoạch Tài chính",
+    "base_url": "https://khtc.uit.edu.vn",
+    "domain": "khtc.uit.edu.vn",
+    "official": true,
+    "max_pages": 14,
+    "priority_keywords": ["hoc-phi", "gia-han", "mien-giam", "le-phi", "thanh-toan", "khtc", "tot-nghiep", "sinh-vien"]
+  },
+  {
+    "id": "uit-courses",
+    "name": "Courses UIT",
+    "base_url": "https://courses.uit.edu.vn",
+    "domain": "courses.uit.edu.vn",
+    "official": true,
+    "max_pages": 3,
+    "priority_keywords": ["course", "moodle", "dang-nhap", "hoc-truc-tuyen", "sinh-vien"]
+  },
+  {
+    "id": "uit-oep",
+    "name": "Văn phòng Các chương trình đặc biệt",
+    "base_url": "https://oep.uit.edu.vn/vi",
+    "domain": "oep.uit.edu.vn",
+    "official": true,
+    "max_pages": 10,
+    "priority_keywords": ["chuong-trinh", "hoc-tap", "hoc-phi", "thong-bao", "sinh-vien", "chat-luong-cao", "tien-tien"]
+  },
+  {
+    "id": "uit-se",
+    "name": "Khoa Công nghệ Phần mềm",
+    "base_url": "https://se.uit.edu.vn",
+    "domain": "se.uit.edu.vn",
+    "official": true,
+    "max_pages": 4,
+    "priority_keywords": ["thong-bao-hoc-vu", "dao-tao", "sinh-vien", "ky-thuat-phan-mem", "truyen-thong-da-phuong-tien", "khoa-luan", "thuc-tap", "doanh-nghiep"]
+  },
+  {
+    "id": "uit-fit",
+    "name": "Khoa Công nghệ Thông tin",
+    "base_url": "https://fit.uit.edu.vn",
+    "domain": "fit.uit.edu.vn",
+    "official": true,
+    "max_pages": 4,
+    "priority_keywords": ["thong-bao-he-dai-hoc", "chuong-trinh-dao-tao", "chuan-dau-ra", "cong-nghe-thong-tin", "khoa-hoc-du-lieu", "quy-trinh", "bieu-mau", "sinh-vien"]
+  },
+  {
+    "id": "uit-cs",
+    "name": "Khoa Khoa học Máy tính",
+    "base_url": "https://cs.uit.edu.vn",
+    "domain": "cs.uit.edu.vn",
+    "official": true,
+    "max_pages": 4,
+    "priority_keywords": ["thong-bao", "sinh-vien", "khoa-hoc-may-tinh", "tri-tue-nhan-tao", "he-dai-tra", "he-tai-nang", "khoa-luan", "doan-hoi-clb", "bang-thanh-tich"]
+  },
+  {
+    "id": "uit-httt",
+    "name": "Khoa Hệ thống Thông tin",
+    "base_url": "https://httt.uit.edu.vn",
+    "domain": "httt.uit.edu.vn",
+    "official": true,
+    "max_pages": 4,
+    "priority_keywords": ["he-thong-thong-tin", "thuong-mai-dien-tu", "thong-bao-hoc-vu", "doan-hoi", "nghien-cuu", "thuc-tap", "hoi-nghi-sinh-vien", "sinh-vien"]
+  },
+  {
+    "id": "uit-nc",
+    "name": "Khoa Mạng máy tính và Truyền thông",
+    "base_url": "https://nc.uit.edu.vn",
+    "domain": "nc.uit.edu.vn",
+    "official": true,
+    "max_pages": 4,
+    "priority_keywords": ["mang-may-tinh", "an-toan-thong-tin", "thong-bao-hoc-vu", "thuc-tap", "doan-hoi", "sinh-vien", "bao-cao", "tot-nghiep"]
+  },
+  {
+    "id": "uit-fce",
+    "name": "Khoa Kỹ thuật Máy tính",
+    "base_url": "https://fce.uit.edu.vn",
+    "domain": "fce.uit.edu.vn",
+    "official": true,
+    "max_pages": 4,
+    "priority_keywords": ["ky-thuat-may-tinh", "thiet-ke-vi-mach", "hoat-dong-doan-hoi", "cau-lac-bo", "thong-bao", "hoi-nghi-sinh-vien", "sinh-vien"]
+  }
+]

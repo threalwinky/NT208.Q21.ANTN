@@ -1,0 +1,57 @@
+# Environment
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs / reports
+*.log
+coverage/
+test-results/
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+.pytest_cache/
+.coverage
+.mypy_cache/
+.ruff_cache/
+.venv/
+backend/.venv/
+backend/.pytest_cache/
+
+# Node / Next.js
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+out/
+dist/
+*.tsbuildinfo
+
+# Local app data and generated corpora
+backend/data/*
+!backend/data/README.md
+!backend/data/source_registry.json
+
+
+# Common generated data folders
+backend/data/curated/
+backend/data/evaluation/
+backend/data/pdfs/
+backend/data/ocr/
+backend/data/snapshots/
+backend/data/processed/``
+backend/data/uploads/
+backend/data/tmp/
+backend/data/temp/
