@@ -1,0 +1,414 @@
+@import "tailwindcss";
+
+:root {
+  --page-bg: #f7f9fc;
+  --surface: #ffffff;
+  --surface-soft: #f5f8fc;
+  --surface-strong: #e6edf6;
+  --text-primary: #0f172a;
+  --text-muted: #64748b;
+  --text-soft: #94a3b8;
+  --accent: #2563eb;
+  --accent-strong: #1d4ed8;
+  --accent-soft: #eff6ff;
+  --line: #e8edf4;
+  /* bóng mềm cho card – tạo chiều sâu nhẹ, đỡ phải dùng viền đậm */
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 30px -18px rgba(15, 23, 42, 0.12);
+  --shadow-card-hover: 0 1px 2px rgba(15, 23, 42, 0.05), 0 18px 40px -20px rgba(15, 23, 42, 0.18);
+  --chat-user-bg: #2563eb;
+  --chat-user-bg-strong: #1d4ed8;
+  --chat-user-text: #ffffff;
+  --scrollbar-track: #f1f5f9;
+  --scrollbar-thumb: #cbd5e1;
+  --button-secondary-bg: #ffffff;
+  --button-secondary-hover: #f1f5f9;
+  --badge-default-bg: #f1f5f9;
+  --badge-default-border: #e2e8f0;
+  --badge-default-text: #64748b;
+  --badge-accent-bg: rgba(37, 99, 235, 0.12);
+  --badge-accent-border: rgba(37, 99, 235, 0.24);
+  --badge-accent-text: #1d4ed8;
+  --badge-success-bg: rgba(22, 163, 74, 0.12);
+  --badge-success-border: rgba(22, 163, 74, 0.24);
+  --badge-success-text: #15803d;
+  --badge-warn-bg: rgba(245, 158, 11, 0.14);
+  --badge-warn-border: rgba(245, 158, 11, 0.28);
+  --badge-warn-text: #92400e;
+  --badge-danger-bg: rgba(220, 38, 38, 0.12);
+  --badge-danger-border: rgba(220, 38, 38, 0.24);
+  --badge-danger-text: #b91c1c;
+  --font-body: var(--font-be-vietnam-pro), "Be Vietnam Pro", system-ui, sans-serif;
+  --font-display: var(--font-be-vietnam-pro), "Be Vietnam Pro", system-ui, sans-serif;
+}
+
+@theme inline {
+  --color-background: var(--page-bg);
+  --color-foreground: var(--text-primary);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-display);
+}
+
+[data-theme="light"] {
+  --page-bg: #f7f9fc;
+  --surface: #ffffff;
+  --surface-soft: #f5f8fc;
+  --surface-strong: #e6edf6;
+  --text-primary: #0f172a;
+  --text-muted: #64748b;
+  --text-soft: #94a3b8;
+  --accent: #2563eb;
+  --accent-strong: #1d4ed8;
+  --accent-soft: #eff6ff;
+  --line: #e8edf4;
+  --button-secondary-bg: #f5f8fc;
+  --button-secondary-hover: #f1f5f9;
+  --badge-default-bg: #f1f5f9;
+  --badge-default-border: #e2e8f0;
+  --badge-default-text: #64748b;
+  --badge-accent-bg: rgba(37, 99, 235, 0.12);
+  --badge-accent-border: rgba(37, 99, 235, 0.24);
+  --badge-accent-text: #1d4ed8;
+  --badge-success-bg: rgba(22, 163, 74, 0.12);
+  --badge-success-border: rgba(22, 163, 74, 0.24);
+  --badge-success-text: #15803d;
+  --badge-warn-bg: rgba(245, 158, 11, 0.14);
+  --badge-warn-border: rgba(245, 158, 11, 0.28);
+  --badge-warn-text: #92400e;
+  --badge-danger-bg: rgba(220, 38, 38, 0.12);
+  --badge-danger-border: rgba(220, 38, 38, 0.24);
+  --badge-danger-text: #b91c1c;
+}
+
+[data-theme="dark"] {
+  --page-bg: #0f172a;
+  --surface: #1e293b;
+  --surface-soft: #334155;
+  --surface-strong: #475569;
+  --text-primary: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-soft: #cbd5e1;
+  --accent: #3b82f6;
+  --accent-strong: #2563eb;
+  --accent-soft: rgba(59, 130, 246, 0.16);
+  --line: #2c3a4f;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 40px -24px rgba(0, 0, 0, 0.6);
+  --shadow-card-hover: 0 1px 2px rgba(0, 0, 0, 0.35), 0 22px 48px -22px rgba(0, 0, 0, 0.7);
+  --chat-user-bg: #2563eb;
+  --chat-user-bg-strong: #1d4ed8;
+  --chat-user-text: #ffffff;
+  --scrollbar-track: #1e293b;
+  --scrollbar-thumb: #475569;
+  --button-secondary-bg: #1e293b;
+  --button-secondary-hover: #334155;
+  --badge-default-bg: #334155;
+  --badge-default-border: #475569;
+  --badge-default-text: #cbd5e1;
+  --badge-accent-bg: rgba(59, 130, 246, 0.18);
+  --badge-accent-border: rgba(59, 130, 246, 0.34);
+  --badge-accent-text: #bfdbfe;
+  --badge-success-bg: rgba(22, 163, 74, 0.18);
+  --badge-success-border: rgba(22, 163, 74, 0.34);
+  --badge-success-text: #bbf7d0;
+  --badge-warn-bg: rgba(245, 158, 11, 0.18);
+  --badge-warn-border: rgba(245, 158, 11, 0.34);
+  --badge-warn-text: #fde68a;
+  --badge-danger-bg: rgba(220, 38, 38, 0.18);
+  --badge-danger-border: rgba(220, 38, 38, 0.34);
+  --badge-danger-text: #fecaca;
+}
+
+* {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background: var(--page-bg);
+  color: var(--text-primary);
+  font-family: var(--font-body), sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  margin: 0;
+}
+
+/* ── Helper bố cục thoáng (kiểu trang education) ───────────────────────────── */
+.studify-container {
+  width: 100%;
+  max-width: 72rem; /* ~1152px */
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+@media (min-width: 768px) {
+  .studify-container {
+    padding-inline: 2rem;
+  }
+}
+
+/* Card mềm dùng chung: viền mảnh + bóng dịu, bo tròn lớn cho cảm giác thoáng */
+.card-soft {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-card);
+}
+
+[data-theme="dark"] body {
+  background: var(--page-bg);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display), sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+[role="button"],
+summary,
+select {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 999px;
+  border: 3px solid var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--scrollbar-thumb) 82%, var(--accent));
+}
+
+::selection {
+  background: rgba(13, 92, 171, 0.18);
+}
+
+.glass-grid {
+  background-image:
+    linear-gradient(to right, rgba(13, 92, 171, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(13, 92, 171, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.prose-studify {
+  color: var(--text-primary);
+}
+
+.prose-studify > * + * {
+  margin-top: 0.85rem;
+}
+
+.prose-studify h1,
+.prose-studify h2,
+.prose-studify h3,
+.prose-studify h4 {
+  margin-top: 1rem;
+  margin-bottom: 0.45rem;
+  font-family: var(--font-display), sans-serif;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.prose-studify h1 {
+  font-size: 1.35rem;
+}
+
+.prose-studify h2 {
+  font-size: 1.15rem;
+}
+
+.prose-studify h3 {
+  font-size: 1rem;
+}
+
+.prose-studify p,
+.prose-studify li {
+  line-height: 1.8;
+}
+
+.prose-studify ul,
+.prose-studify ol {
+  margin-left: 1.2rem;
+}
+
+.prose-studify li + li {
+  margin-top: 0.35rem;
+}
+
+.prose-studify a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.prose-studify blockquote {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  color: var(--text-muted);
+}
+
+.prose-studify pre {
+  overflow-x: auto;
+  border-radius: 16px;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  padding: 0.9rem 1rem;
+}
+
+.prose-studify .markdown-table-wrap {
+  margin: 1rem 0;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+.prose-studify .markdown-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.prose-studify .markdown-table-head {
+  background: var(--surface-soft);
+}
+
+.prose-studify .markdown-table-row:not(:last-child) .markdown-table-cell {
+  border-bottom: 1px solid var(--line);
+}
+
+.prose-studify .markdown-table-cell {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.65;
+}
+
+.prose-studify .markdown-table-heading {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--text-primary);
+}
+
+.prose-studify td.markdown-table-cell {
+  color: var(--text-muted);
+}
+
+.prose-studify hr {
+  margin: 1rem 0;
+  border: none;
+  border-top: 1px solid var(--line);
+}
+
+.btn-primary {
+  display: inline-flex;
+  height: 3rem;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  background: var(--accent);
+  color: #fff !important;
+  box-shadow: none;
+}
+
+.btn-primary:hover {
+  background: var(--accent-strong);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  height: 3rem;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  background: var(--button-secondary-bg);
+  color: var(--text-primary) !important;
+}
+
+.btn-secondary:hover {
+  background: var(--button-secondary-hover);
+}
+
+.fade-up {
+  animation: fadeUp 0.6s ease both;
+}
+
+.thinking-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.thinking-dots span {
+  width: 0.52rem;
+  height: 0.52rem;
+  border-radius: 999px;
+  background: var(--accent);
+  opacity: 0.3;
+  animation: thinkingPulse 1.15s ease-in-out infinite;
+}
+
+.thinking-dots span:nth-child(2) {
+  animation-delay: 0.18s;
+}
+
+.thinking-dots span:nth-child(3) {
+  animation-delay: 0.36s;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes thinkingPulse {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}

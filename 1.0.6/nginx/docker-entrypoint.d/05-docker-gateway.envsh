@@ -1,0 +1,7 @@
+#!/bin/sh
+set -eu
+
+if [ -z "${DOCKER_GATEWAY:-}" ]; then
+  DOCKER_GATEWAY="$(awk '$2 == "00000000" {print $3; exit}' /proc/net/route | sed 's/../0x& /g' | awk '{printf "%d.%d.%d.%d", $4, $3, $2, $1}')"
+  export DOCKER_GATEWAY
+fi

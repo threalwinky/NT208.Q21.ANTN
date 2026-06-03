@@ -1,0 +1,59 @@
+# Environment
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs / reports
+*.log
+coverage/
+test-results/
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+.pytest_cache/
+.coverage
+.mypy_cache/
+.ruff_cache/
+.venv/
+backend/.venv/
+backend/.pytest_cache/
+
+# Node / Next.js
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+out/
+dist/
+*.tsbuildinfo
+
+# Data: chỉ commit cấu trúc thư mục rỗng (.gitkeep) + README + source_registry
+# + nội dung curated/evaluation; KHÔNG commit corpus nặng (pdfs/ocr/...) hay
+# dữ liệu người dùng (uploads/revision). Bỏ NỘI DUNG nhưng giữ .gitkeep.
+backend/data/pdfs/*
+backend/data/ocr/*
+backend/data/snapshots/*
+backend/data/processed/*
+backend/data/uploads/*
+backend/data/revision/*
+backend/data/tmp/*
+backend/data/temp/*
+!backend/data/pdfs/.gitkeep
+!backend/data/ocr/.gitkeep
+!backend/data/snapshots/.gitkeep
+!backend/data/processed/.gitkeep
+rag_db/
+*.sqlite
+*.db

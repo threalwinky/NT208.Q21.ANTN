@@ -1,0 +1,182 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: studify-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-studify}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-studify_local_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-studify}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-studify} -d ${POSTGRES_DB:-studify}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: studify-redis
+    command: redis-server --appendonly yes
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  qdrant:
+    image: qdrant/qdrant:v1.15.1
+    container_name: studify-qdrant
+    ports:
+      - "${QDRANT_HTTP_PORT:-6333}:6333"
+      - "${QDRANT_GRPC_PORT:-6334}:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+  backend:
+    build:
+      context: ./backend
+    container_name: studify-backend
+    network_mode: host
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      APP_VERSION: ${APP_VERSION:-1.0.5}
+      DATABASE_URL: ${BACKEND_DATABASE_URL:-postgresql+psycopg2://studify:studify_local_dev@127.0.0.1:5432/studify}
+      REDIS_URL: ${BACKEND_REDIS_URL:-redis://127.0.0.1:6379/0}
+      QDRANT_URL: ${BACKEND_QDRANT_URL:-http://127.0.0.1:6333}
+      LLM_PROVIDER: ${LLM_PROVIDER:-gpt}
+      GPT_BASE_URL: ${GPT_BASE_URL:-}
+      GPT_API_KEY: ${GPT_API_KEY:-}
+      GPT_CHAT_MODEL: ${GPT_CHAT_MODEL:-cx/gpt-5.5}
+      GPT_TIMEOUT_SECONDS: ${GPT_TIMEOUT_SECONDS:-120}
+      MIMO_BASE_URL: ${MIMO_BASE_URL:-https://token-plan-ams.xiaomimimo.com/v1}
+      MIMO_ANTHROPIC_BASE_URL: ${MIMO_ANTHROPIC_BASE_URL:-https://token-plan-ams.xiaomimimo.com/anthropic/v1}
+      MIMO_API_KEY: ${MIMO_API_KEY:-}
+      MIMO_CHAT_MODEL: ${MIMO_CHAT_MODEL:-mimo-v2.5-pro}
+      MIMO_TEMPERATURE: ${MIMO_TEMPERATURE:-0.2}
+      MIMO_TOP_P: ${MIMO_TOP_P:-0.9}
+      MIMO_MAX_COMPLETION_TOKENS: ${MIMO_MAX_COMPLETION_TOKENS:-1200}
+      MIMO_TIMEOUT_SECONDS: ${MIMO_TIMEOUT_SECONDS:-120}
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-ollama}
+      OLLAMA_BASE_URL: ${BACKEND_OLLAMA_BASE_URL:-http://127.0.0.1:11434}
+      OLLAMA_CHAT_MODEL: ${OLLAMA_CHAT_MODEL:-mimo-v2.5-pro}
+      OLLAMA_EMBED_MODEL: ${OLLAMA_EMBED_MODEL:-nomic-embed-text}
+      OLLAMA_FALLBACK_URLS: ${OLLAMA_FALLBACK_URLS:-http://host.docker.internal:11434,http://10.0.0.1:11434,http://172.17.0.1:11434}
+      JWT_SECRET: ${JWT_SECRET:-replace-this-with-a-long-random-secret}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      DATA_DIR: ${DATA_DIR:-/app/data}
+      DB_POOL_SIZE: ${DB_POOL_SIZE:-10}
+      DB_MAX_OVERFLOW: ${DB_MAX_OVERFLOW:-5}
+      DB_POOL_RECYCLE: ${DB_POOL_RECYCLE:-1800}
+      ENABLE_ADMIN_DEMO: ${ENABLE_ADMIN_DEMO:-true}
+      ENABLE_DOCUMENT_UPLOAD: ${ENABLE_DOCUMENT_UPLOAD:-true}
+      ENABLE_EMAIL_REMINDERS: ${ENABLE_EMAIL_REMINDERS:-false}
+      ENABLE_EVALUATION_RUNNER: ${ENABLE_EVALUATION_RUNNER:-true}
+      ENABLE_MIMO_STREAMING: ${ENABLE_MIMO_STREAMING:-true}
+      ENABLE_WEB_SEARCH: ${ENABLE_WEB_SEARCH:-true}
+      WEB_SEARCH_MAX_RESULTS: ${WEB_SEARCH_MAX_RESULTS:-5}
+      ENABLE_WELLBEING: ${ENABLE_WELLBEING:-true}
+      ENABLE_SPOTIFY: ${ENABLE_SPOTIFY:-false}
+      ENABLE_AI_NOTE_REFLECTION: ${ENABLE_AI_NOTE_REFLECTION:-false}
+      SPOTIFY_ENABLED: ${SPOTIFY_ENABLED:-false}
+      SPOTIFY_ACCESS_TOKEN: ${SPOTIFY_ACCESS_TOKEN:-}
+      SPOTIFY_CLIENT_ID: ${SPOTIFY_CLIENT_ID:-}
+      SPOTIFY_CLIENT_SECRET: ${SPOTIFY_CLIENT_SECRET:-}
+      SPOTIFY_REDIRECT_URI: ${SPOTIFY_REDIRECT_URI:-http://localhost:8000/api/v1/integrations/spotify/callback}
+      SPOTIFY_TOKEN_ENCRYPTION_KEY: ${SPOTIFY_TOKEN_ENCRYPTION_KEY:-}
+    command: >
+      sh -c "python -m app.scripts.seed &&
+      uvicorn app.main:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips='*'"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+    volumes:
+      - ./backend/data:/app/data
+
+  worker:
+    build:
+      context: ./backend
+    container_name: studify-worker
+    network_mode: host
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      APP_VERSION: ${APP_VERSION:-1.0.5}
+      DATABASE_URL: ${BACKEND_DATABASE_URL:-postgresql+psycopg2://studify:studify_local_dev@127.0.0.1:5432/studify}
+      REDIS_URL: ${BACKEND_REDIS_URL:-redis://127.0.0.1:6379/0}
+      QDRANT_URL: ${BACKEND_QDRANT_URL:-http://127.0.0.1:6333}
+      LLM_PROVIDER: ${LLM_PROVIDER:-gpt}
+      GPT_BASE_URL: ${GPT_BASE_URL:-}
+      GPT_API_KEY: ${GPT_API_KEY:-}
+      GPT_CHAT_MODEL: ${GPT_CHAT_MODEL:-cx/gpt-5.5}
+      GPT_TIMEOUT_SECONDS: ${GPT_TIMEOUT_SECONDS:-120}
+      MIMO_BASE_URL: ${MIMO_BASE_URL:-https://token-plan-ams.xiaomimimo.com/v1}
+      MIMO_ANTHROPIC_BASE_URL: ${MIMO_ANTHROPIC_BASE_URL:-https://token-plan-ams.xiaomimimo.com/anthropic/v1}
+      MIMO_API_KEY: ${MIMO_API_KEY:-}
+      MIMO_CHAT_MODEL: ${MIMO_CHAT_MODEL:-mimo-v2.5-pro}
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-ollama}
+      OLLAMA_BASE_URL: ${BACKEND_OLLAMA_BASE_URL:-http://127.0.0.1:11434}
+      OLLAMA_CHAT_MODEL: ${OLLAMA_CHAT_MODEL:-mimo-v2.5-pro}
+      OLLAMA_EMBED_MODEL: ${OLLAMA_EMBED_MODEL:-nomic-embed-text}
+      OLLAMA_FALLBACK_URLS: ${OLLAMA_FALLBACK_URLS:-http://host.docker.internal:11434,http://10.0.0.1:11434,http://172.17.0.1:11434}
+      JWT_SECRET: ${JWT_SECRET:-replace-this-with-a-long-random-secret}
+      DATA_DIR: ${DATA_DIR:-/app/data}
+      ENABLE_WEB_SEARCH: ${ENABLE_WEB_SEARCH:-true}
+      WEB_SEARCH_MAX_RESULTS: ${WEB_SEARCH_MAX_RESULTS:-5}
+      ENABLE_SPOTIFY: ${ENABLE_SPOTIFY:-false}
+      SPOTIFY_ENABLED: ${SPOTIFY_ENABLED:-false}
+    command: ["python", "-m", "app.worker.main"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+    volumes:
+      - ./backend/data:/app/data
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: studify-frontend
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-/api/v1}
+      INTERNAL_API_BASE_URL: ${INTERNAL_API_BASE_URL:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      - backend
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: studify-nginx
+    environment:
+      DOCKER_GATEWAY: ${NGINX_BACKEND_GATEWAY:-}
+    ports:
+      - "${NGINX_PORT:-8080}:80"
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - ./nginx/docker-entrypoint.d/05-docker-gateway.envsh:/docker-entrypoint.d/05-docker-gateway.envsh:ro
+      - ./nginx/docker-entrypoint.d/25-remove-default-conf.sh:/docker-entrypoint.d/25-remove-default-conf.sh:ro
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  postgres_data:
+  redis_data:
+  qdrant_data:
