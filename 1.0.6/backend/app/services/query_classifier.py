@@ -43,9 +43,27 @@ ACADEMIC_KEYWORDS = {
     "tot nghiep": 2.5,
     "ctdt": 2.0,
     "chuong trinh dao tao": 2.5,
+    "chuong trinh hoc": 2.2,
     "chuong trinh tai nang": 2.7,
     "tai nang": 2.2,
     "chuong trinh dac biet": 2.5,
+    "khung chuong trinh": 2.3,
+    "ke hoach hoc tap": 2.2,
+    "lo trinh hoc": 2.0,
+    "mon hoc": 1.5,
+    "mon bat buoc": 2.2,
+    "mon tien quyet": 2.2,
+    "mon hoc tiep theo": 2.8,
+    "hoc tiep mon": 2.8,
+    "hoc mon nao tiep": 2.8,
+    "nen hoc mon": 2.8,
+    "mon minh nen hoc": 3.0,
+    "mon nen hoc": 2.6,
+    "mon nen dang ky": 2.6,
+    "dang ky mon nao": 2.4,
+    "dang ky hoc phan nao": 2.6,
+    "mon con lai": 2.4,
+    "hoc phan con lai": 2.4,
     "chat luong cao": 2.2,
     "tien tien": 1.8,
     "cu nhan": 1.4,
@@ -88,7 +106,57 @@ ACADEMIC_KEYWORDS = {
     "vstep": 2.2,
     "vnu ept": 2.5,
     "anh van": 2.1,
+    "gpa": 2.4,
+    "diem trung binh": 2.4,
+    "diem tich luy": 2.2,
+    "tin chi": 2.1,
+    "tin chi tich luy": 2.5,
+    "tien do hoc tap": 2.3,
+    "hoc luc": 1.8,
 }
+
+LEADERSHIP_KEYWORDS = [
+    "hieu truong",
+    "pho hieu truong",
+    "ban giam hieu",
+    "giam hieu",
+    "lanh dao truong",
+    "hieu pho",
+]
+
+UIT_SCHOOL_ALIASES = [
+    "uit",
+    "dai hoc cong nghe thong tin",
+    "dh cong nghe thong tin",
+    "dhcntt",
+    "truong cong nghe thong tin",
+]
+
+OTHER_SCHOOL_ALIASES = [
+    "hcmus",
+    "hcmut",
+    "bach khoa",
+    "khoa hoc tu nhien",
+    "ueh",
+    "uel",
+    "ussh",
+    "hcmue",
+    "huflit",
+    "rmit",
+    "fpt",
+    "ton duc thang",
+    "tdtu",
+    "van lang",
+    "hoa sen",
+    "su pham ky thuat",
+    "y duoc",
+    "can tho",
+    "da nang",
+    "hust",
+    "bach khoa ha noi",
+    "dai hoc quoc gia",
+    "dhqg",
+]
 
 ANNOUNCEMENT_KEYWORDS = {
     "thong bao": 2.8,
@@ -195,6 +263,20 @@ def _contains_phrase(haystack: str, phrase: str) -> bool:
     return f" {phrase} " in f" {haystack} "
 
 
+def _mentions_uit_school(normalized: str) -> bool:
+    return any(_contains_phrase(normalized, alias) for alias in UIT_SCHOOL_ALIASES)
+
+
+def _mentions_other_school(normalized: str) -> bool:
+    if _mentions_uit_school(normalized):
+        return False
+    return any(_contains_phrase(normalized, alias) for alias in OTHER_SCHOOL_ALIASES)
+
+
+def _is_default_uit_leadership_query(normalized: str) -> bool:
+    return any(_contains_phrase(normalized, keyword) for keyword in LEADERSHIP_KEYWORDS) and not _mentions_other_school(normalized)
+
+
 def _score_keywords(normalized: str, keywords: dict[str, float]) -> float:
     score = 0.0
     for phrase, weight in keywords.items():
@@ -241,6 +323,8 @@ def analyze_query(content: str) -> QueryAnalysis:
         "ACADEMIC": _score_keywords(normalized, ACADEMIC_KEYWORDS),
         "PLANNING": _score_keywords(normalized, PLANNING_KEYWORDS),
     }
+    if _is_default_uit_leadership_query(normalized):
+        scores["ACADEMIC"] += 2.8
     urgency_score = _score_keywords(normalized, URGENT_KEYWORDS)
 
     if "?" in content and scores["ACADEMIC"] > 0:
@@ -263,6 +347,20 @@ def analyze_query(content: str) -> QueryAnalysis:
         scores["ACADEMIC"] += 0.9
     if any(token in normalized for token in ["dang ky hoc phan", "dang ky hoc", "hoc phi", "chuong trinh dao tao", "ctdt", "oep", "khtc", "canh bao hoc vu"]) and scores["ACADEMIC"] > 0:
         scores["ACADEMIC"] += 0.8
+    if any(
+        token in normalized
+        for token in [
+            "nen hoc mon",
+            "mon minh nen hoc",
+            "hoc tiep mon",
+            "hoc mon nao tiep",
+            "mon hoc tiep theo",
+            "mon nen dang ky",
+            "dang ky mon nao",
+            "dang ky hoc phan nao",
+        ]
+    ) and any(token in normalized for token in ["mon", "hoc phan", "chuong trinh", "ctdt", "lo trinh"]):
+        scores["ACADEMIC"] += 1.2
 
     category, top_score = max(scores.items(), key=lambda item: item[1])
     if top_score < 1.2:

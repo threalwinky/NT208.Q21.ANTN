@@ -27,9 +27,53 @@ TOPIC_EXPANSIONS = {
     "schedule": "lịch học lịch thi thời khóa biểu UIT học kỳ cập nhật mới nhất",
     "annual_plan": "kế hoạch đào tạo năm học UIT lịch nghỉ học kỳ hè khai giảng Tết",
     "academic_warning": "cảnh báo học vụ UIT điều kiện cảnh báo xử lý học vụ sinh viên",
-    "curriculum": "chương trình đào tạo UIT CTĐT ngành học khóa học môn học tiên quyết",
+    "curriculum": "chương trình đào tạo UIT CTĐT ngành học khóa học môn học tiên quyết môn nên học tiếp theo",
+    "leadership": "Ban Giám hiệu UIT Hiệu trưởng Phó hiệu trưởng phụ trách lãnh đạo trường thông tin chính thức mới nhất",
     "special_program": "chương trình đặc biệt UIT OEP tài năng chất lượng cao tiên tiến BCU UON",
 }
+
+LEADERSHIP_KEYWORDS = [
+    "hieu truong",
+    "pho hieu truong",
+    "ban giam hieu",
+    "giam hieu",
+    "lanh dao truong",
+    "hieu pho",
+]
+
+UIT_SCHOOL_ALIASES = [
+    "uit",
+    "dai hoc cong nghe thong tin",
+    "dh cong nghe thong tin",
+    "dhcntt",
+    "truong cong nghe thong tin",
+]
+
+OTHER_SCHOOL_ALIASES = [
+    "hcmus",
+    "hcmut",
+    "bach khoa",
+    "khoa hoc tu nhien",
+    "ueh",
+    "uel",
+    "ussh",
+    "hcmue",
+    "huflit",
+    "rmit",
+    "fpt",
+    "ton duc thang",
+    "tdtu",
+    "van lang",
+    "hoa sen",
+    "su pham ky thuat",
+    "y duoc",
+    "can tho",
+    "da nang",
+    "hust",
+    "bach khoa ha noi",
+    "dai hoc quoc gia",
+    "dhqg",
+]
 
 
 class QueryRewriter:
@@ -38,6 +82,17 @@ class QueryRewriter:
         stripped = "".join(char for char in normalized if unicodedata.category(char) != "Mn")
         compact = re.sub(r"[^a-z0-9]+", " ", stripped)
         return re.sub(r"\s+", " ", compact).strip()
+
+    def _contains_phrase(self, normalized: str, phrase: str) -> bool:
+        return bool(re.search(rf"\b{re.escape(phrase)}\b", normalized))
+
+    def _mentions_uit_school(self, normalized: str) -> bool:
+        return any(self._contains_phrase(normalized, alias) for alias in UIT_SCHOOL_ALIASES)
+
+    def _mentions_other_school(self, normalized: str) -> bool:
+        if self._mentions_uit_school(normalized):
+            return False
+        return any(self._contains_phrase(normalized, alias) for alias in OTHER_SCHOOL_ALIASES)
 
     def expand_abbreviations(self, query: str) -> str:
         rewritten = query or ""
@@ -62,7 +117,23 @@ class QueryRewriter:
             "schedule": ["lich hoc", "lich thi", "tkb", "thoi khoa bieu"],
             "annual_plan": ["ke hoach nam", "ke hoach dao tao", "nghi he", "hoc ky he", "tet"],
             "academic_warning": ["canh bao hoc vu", "canh bao hoc tap", "xu ly hoc vu"],
-            "curriculum": ["ctdt", "chuong trinh dao tao", "khung chuong trinh", "nganh hoc"],
+            "curriculum": [
+                "ctdt",
+                "chuong trinh dao tao",
+                "chuong trinh hoc",
+                "khung chuong trinh",
+                "nganh hoc",
+                "ke hoach hoc tap",
+                "lo trinh hoc",
+                "mon hoc tiep theo",
+                "hoc tiep mon",
+                "hoc mon nao tiep",
+                "nen hoc mon",
+                "mon minh nen hoc",
+                "mon nen dang ky",
+                "dang ky mon nao",
+                "dang ky hoc phan nao",
+            ],
             "special_program": ["oep", "tai nang", "chat luong cao", "cttn", "ctclc", "cttt", "bcu", "uon"],
             "wellbeing": ["stress", "ap luc", "met", "buon", "qua tai", "lo au"],
             "planning": ["len ke hoach", "sap xep", "deadline", "nhac viec"],
@@ -76,6 +147,8 @@ class QueryRewriter:
                 if re.search(rf"\b{re.escape(keyword)}\b", normalized):
                     matched.add(topic)
                     break
+        if any(self._contains_phrase(normalized, keyword) for keyword in LEADERSHIP_KEYWORDS) and not self._mentions_other_school(normalized):
+            matched.add("leadership")
         return matched or {"general"}
 
     def rewrite(self, query: str) -> str:
