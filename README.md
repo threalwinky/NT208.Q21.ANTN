@@ -39,4 +39,4 @@ Sau khi khởi động:
 
 Trước khi triển khai thực tế, cần thay toàn bộ mật khẩu, API key và `JWT_SECRET` mẫu trong file `.env`.
 
-Chúng em đã biết làm web và hiểu hệ thống web hoạt động như thế nào.
+### Chúng em đã biết làm web và hiểu hệ thống web hoạt động như thế nào.
